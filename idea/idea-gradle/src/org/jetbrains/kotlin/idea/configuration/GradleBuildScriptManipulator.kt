@@ -92,3 +92,19 @@ fun GradleBuildScriptManipulator<*>.useNewSyntax(kotlinPluginName: String): Bool
 
     return !hasOldApply
 }
+
+private val MIN_GRADLE_VERSION_FOR_API_AND_IMPLEMENTATION = GradleVersion.version("3.4")
+
+fun GradleVersion.scope(directive: String): String {
+    if (this < MIN_GRADLE_VERSION_FOR_API_AND_IMPLEMENTATION) {
+        return when (directive) {
+            "implementation" -> "compile"
+            "testImplementation" -> "testCompile"
+            "debugCompile" -> "debugImplementation"
+            "androidTestImplementation" -> "androidTestCompile"
+            else -> throw IllegalArgumentException("Unknown directive `$directive`")
+        }
+    }
+
+    return directive
+}
