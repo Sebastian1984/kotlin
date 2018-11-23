@@ -79,10 +79,9 @@ private fun gradleVersionFromFile(psiFile: PsiFile): GradleVersion? {
 
 val MIN_GRADLE_VERSION_FOR_NEW_PLUGIN_SYNTAX = GradleVersion.version("4.4")
 
-fun GradleBuildScriptManipulator<*>.useNewSyntax(kotlinPluginName: String): Boolean {
+fun GradleBuildScriptManipulator<*>.useNewSyntax(kotlinPluginName: String, gradleVersion: GradleVersion): Boolean {
     if (!preferNewSyntax) return false
 
-    val gradleVersion = fetchGradleVersion(scriptFile)
     if (gradleVersion < MIN_GRADLE_VERSION_FOR_NEW_PLUGIN_SYNTAX) return false
 
     if (isConfiguredWithOldSyntax(kotlinPluginName)) return true
