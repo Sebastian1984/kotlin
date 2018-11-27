@@ -3,6 +3,10 @@ package forTests.javaContext;
 import java.util.ArrayList;
 
 public class JavaClass {
+    public interface JavaStatic {
+        static int state() { return 1; }
+    }
+
     public void simple() {
         int breakpoint = 1;
     }
