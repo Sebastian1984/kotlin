@@ -114,8 +114,7 @@ internal fun <T> Array<out T>.contentDeepEqualsImpl(other: Array<out T>): Boolea
 @kotlin.jvm.JvmName("contentDeepToString")
 @kotlin.js.JsName("contentDeepToStringImpl")
 internal fun <T> Array<out T>.contentDeepToStringImpl(): String {
-    val length = size.coerceAtMost((Int.MAX_VALUE - 2) / 5) * 5 + 2 // in order not to overflow Int.MAX_VALUE
-    return buildString(length) {
+    return buildString {
         contentDeepToStringInternal(this, mutableListOf())
     }
 }
