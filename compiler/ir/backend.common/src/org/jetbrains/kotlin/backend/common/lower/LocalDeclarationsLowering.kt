@@ -46,12 +46,6 @@ interface LocalNameProvider {
     }
 }
 
-
-fun foo() {
-    fun bar() {}
-    bar()
-}
-
 val IrDeclaration.parentsWithSelf: Sequence<IrDeclarationParent>
     get() = generateSequence(this as? IrDeclarationParent) { (it as? IrDeclaration)?.parent }
 
@@ -68,29 +62,6 @@ class LocalDeclarationsLowering(
 ) :
     DeclarationContainerLoweringPass {
 
-    val parentSequenceMap = mutableMapOf<IrDeclaration, List<IrDeclaration>>()
-
-
-    private class ParentCollector(val parentMap: MutableMap<IrDeclaration, List<IrDeclaration>>) : IrElementVisitorVoid {
-        val stack = mutableListOf<IrDeclaration>()
-
-        override fun visitElement(element: IrElement) {
-            element.acceptChildrenVoid(this)
-        }
-
-        override fun visitDeclaration(declaration: IrDeclaration) {
-            parentMap[declaration] = stack.slice(0..stack.lastIndex)
-
-            stack.push(declaration)
-            declaration.acceptChildrenVoid(this)
-            stack.pop()
-        }
-    }
-
-    override fun preLower(irFile: IrFile) {
-        irFile.acceptVoid(ParentCollector(parentSequenceMap))
-    }
-
     private object DECLARATION_ORIGIN_FIELD_FOR_CAPTURED_VALUE :
         IrDeclarationOriginImpl("FIELD_FOR_CAPTURED_VALUE")
 
@@ -101,11 +72,9 @@ class LocalDeclarationsLowering(
         if (irDeclarationContainer is IrDeclaration) {
 
             // TODO: in case of `crossinline` lambda the @containingDeclaration and @parent points to completely different locations
-//            val parentsDecl = irDeclarationContainer.parents
+            val parents = irDeclarationContainer.parents
 
-            val parents = parentSequenceMap[irDeclarationContainer]!!
-
-//            val parentsDesc = irDeclarationContainer.descriptor.parents
+//            val parents = parentSequenceMap[irDeclarationContainer]!!
 
             if (parents.any { it is IrFunction || it is IrField }) {
 
@@ -775,7 +744,6 @@ class LocalDeclarationsLowering(
 
 
         private fun collectClosures() {
-            foo()
             val annotator = ClosureAnnotator(memberDeclaration)
 
             localFunctions.forEach { declaration, context ->

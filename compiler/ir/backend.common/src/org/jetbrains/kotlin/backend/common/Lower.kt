@@ -35,7 +35,6 @@ interface ClassLoweringPass {
 }
 
 interface DeclarationContainerLoweringPass {
-    fun preLower(irFile: IrFile) {}
     fun lower(irDeclarationContainer: IrDeclarationContainer)
 }
 

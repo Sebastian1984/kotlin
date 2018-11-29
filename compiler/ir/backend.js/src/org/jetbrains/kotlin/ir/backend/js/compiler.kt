@@ -150,25 +150,10 @@ private fun JsIrBackendContext.lower(moduleFragment: IrModuleFragment, dependenc
 private fun FileLoweringPass.lower(moduleFragment: IrModuleFragment) = moduleFragment.files.forEach { lower(it) }
 
 private fun DeclarationContainerLoweringPass.runOnFilesPostfix(moduleFragment: IrModuleFragment) =
-    moduleFragment.files.forEach {
-
-        preLower(it)
-
-        if (it.name.endsWith("regex.kt")) {
-            fun foo() {}
-            foo()
-        }
-        runOnFilePostfix(it)
-    }
+    moduleFragment.files.forEach { runOnFilePostfix(it) }
 
 private fun DeclarationContainerLoweringPass.runOnFilesPostfix(files: Iterable<IrFile>) =
-    files.forEach {
-        if (it.name.endsWith("kotlin/string.kt")) {
-            fun foo() {}
-            foo()
-        }
-        runOnFilePostfix(it)
-    }
+    files.forEach { runOnFilePostfix(it) }
 
 private fun BodyLoweringPass.runOnFilesPostfix(moduleFragment: IrModuleFragment) =
     moduleFragment.files.forEach { runOnFilePostfix(it) }
